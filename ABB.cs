@@ -2,7 +2,7 @@ namespace BinaryTree;
 
 public class ABB{
     /// <summary>The main value of the node </summary>
-    public int Value{get; private set;}
+    public int Value{get; set;}
     public ABB(int value, ABB parent){
         Parent = parent;
         Value = value;

@@ -159,14 +159,11 @@ public class Factory
                 return true;
             }
             var newnode = Max_Value_Node(node.Left);
-            parent.Left = newnode;
+            node.Value = newnode.Value;
             if(newnode.Parent.Value!= node.Value){
                 // act the reference
                 newnode.Parent.Right = null;
             }
-            newnode.Parent = parent;
-            newnode.Left = node.Left;
-            newnode.Right = node.Right;
             return true;
         }else{
             // if node is the right child
@@ -189,14 +186,11 @@ public class Factory
                 return true;
             }
             var newnode = Max_Value_Node(node.Left);
-            parent.Right = newnode;
+            node.Value = newnode.Value;
             if(newnode.Parent.Value!= node.Value){
                 // act the reference
                 newnode.Parent.Right = null;
             }
-            newnode.Parent= parent;
-            newnode.Left = node.Left;
-            newnode.Right = node.Right;
             return true;
         }
         return false;

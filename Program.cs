@@ -23,8 +23,8 @@ class Program
         test2.Right.Right.TreeRight(45);
 
         var fact = new Factory();
+        fact.Delete(30,test2);
         fact.Print(test2);
-        
 
     }
     
