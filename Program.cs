@@ -5,8 +5,8 @@ class Program
     {
         Console.Clear();
 
-        var test2 = new ABBNode<int>(20, null);
-        var binary = new BinaryTree<int>(test2);
+        var binary = new BinaryTree<int>();
+        binary.Insert(20);
         binary.Insert(15);
         binary.Insert(30);
         binary.Insert(10);
@@ -22,57 +22,7 @@ class Program
         binary.Insert(37);
         binary.Insert(45);
 
-        // binary.Remove_Node(27);
-        // binary.Remove_Node(27);
-
-
-        Random x = new Random();
-        var rand = x.Next(1,50);
-        rand = 27;
-
-        // binary.Print();
-
-
-
-
-
-        /* #region TEST_INSERT
         binary.Print();
-        System.Console.WriteLine("El valor a intentar insertar será: "+ rand);
-        try
-        {
-            binary.Insert(rand);
-            binary.Print();
-        }
-        catch 
-        {
-            System.Console.WriteLine("Ya existe ese valor");
-        }
-        #endregion */
-
-        /* #region TEST_FIND
-        binary.Print();
-        System.Console.WriteLine("El nodo a buscar es: "+rand);
-        var test = binary.Find_Node(rand);
-        if(test is not null) System.Console.WriteLine("Sí contiene al nodo: "+ test.Key);
-        else System.Console.WriteLine("No lo contiene");
-
-
-        #endregion */
-        
-        #region TEST_Remove
-        binary.Print();
-        System.Console.WriteLine("El nodo a remover es: "+rand);
-        if(!(binary.Find_Node(rand) is null)) System.Console.WriteLine("Sí lo contiene");
-        else System.Console.WriteLine("No lo contiene");
-        binary.Remove_Node(rand);
-        System.Console.WriteLine("Everything OK");
-        binary.Print();
-
-
-        #endregion
-
-
 
 
     }

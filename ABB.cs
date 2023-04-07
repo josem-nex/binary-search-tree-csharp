@@ -1,155 +1,199 @@
 namespace BinaryTree;
-public class BinaryTree<TKey> where TKey : IComparable<TKey>{
+
+public class BinaryTree<TKey> where TKey : IComparable<TKey>
+{
     public ABBNode<TKey> Root;
 
-    public BinaryTree(){}
+    public BinaryTree() { }
     public BinaryTree(ABBNode<TKey> root)
     {
         Root = root;
     }
-
-    public void Insert(TKey key){
-        Root = Insert(key,Root);
+    /// <summary>Insertar un nuevo árbol en una posición válida.</summary>
+    public bool Insert(TKey key)
+    {
+        var node = new ABBNode<TKey>(key);
+        return Insert(node);
     }
-    private ABBNode<TKey> Insert(TKey key, ABBNode<TKey> node){
-        if(node is null) node = new ABBNode<TKey>(key, null);
-        else{
-            if(key.CompareTo(node.Key)==0) throw new Exception("This node already exists");
-            if(key.CompareTo(node.Key)<0){
-                node.LChild = Insert(key, node.LChild);
-            }else{
-                node.RChild = Insert(key, node.RChild);
-            }
+    public bool Insert(ABBNode<TKey> node){
+        if(Root is null){ 
+            Root = node;
+            return true;
         }
-        return node;
-    }
-    public ABBNode<TKey> Find_Node(TKey key) => Find_Node(key, Root );
-    private ABBNode<TKey> Find_Node(TKey key, ABBNode<TKey> node){
-        if(key.CompareTo(node.Key)==0) return node;
-        if(key.CompareTo(node.Key)<0){
-            if(node.LChild is null) return null;
-            return Find_Node(key, node.LChild);
-        }else{
-            if(node.RChild is null) return null;
-            return Find_Node(key, node.RChild);
-        }
-    }
-    public void InOrder()=> InOrder(Root);
-    private void InOrder(ABBNode<TKey> node){
-        if(node.LChild is not null) InOrder(node.LChild);
-        System.Console.WriteLine(node.Key);
-        if(node.RChild is not null) InOrder(node.RChild);
-    }
-    public ABBNode<TKey> Max_Value() => Max_Value_Node(Root);
-    public ABBNode<TKey> Min_Value() => Min_Value_Node(Root);
-
-    private ABBNode<TKey> Max_Value_Node(ABBNode<TKey> root){
-        if(root.RChild == null) return root;
-        return Max_Value_Node(root.RChild);
-    }
-    private ABBNode<TKey> Min_Value_Node(ABBNode<TKey> root){
-        if(root.LChild == null) return root;
-        return Min_Value_Node(root.LChild);
-    }
-    public bool Remove_Node(TKey key) => Remove_Node(key, Root);
-
-    public bool Remove_Node2(TKey key){
-        if(key.CompareTo(Root.Key)==0){
-            if(Root.IsLeaf) return false;
-            else
+        else
+        {
+            ABBNode<TKey> act = Root;
+            while (true)
             {
-                var result = Max_Value_Node(Root.LChild);
-                if(result.Key.CompareTo(Root.LChild.Key)== 0){
-                    Root.RChild.Parent = result;
-                    result.Parent = null;
-                    Root = result;
-                    return true;
-                }else
-                {
-                    if(result.LChild is not null){
-                        result.LChild.Parent = result.Parent;
-                        result.Parent.RChild = result.LChild;
-                        Root.Key = result.Key;
-                        return true;
-                    }else
+                var compare = node.Key.CompareTo(act.Key);
+                if(compare is 0) return false;
+                else if(compare<0){
+                    if(act.LChild is not null) act = act.LChild;
+                    else
                     {
-                        result.Parent.RChild = null;
-                        Root.Key = result.Key;
+                        act.LChild = node;
+                        return true;
+                    }
+                }
+                else
+                {
+                    if(act.RChild is not null) act = act.RChild;
+                    else
+                    {
+                        act.RChild = node;
                         return true;
                     }
                 }
             }
-        }else return Remove_Node2(key,Root);
-    }
-    private bool Remove_Node2(TKey key, ABBNode<TKey> root){
-        return true;
-    }
-    private bool Remove_Node(TKey key, ABBNode<TKey> root){   // ME QUEDE TRABAJANDO AQUI
-        //This is a simplistic delete implementation, 
-        //it could improve knowing the levels and the number of children of each node
-        var node = Find_Node(key, root);
-        if(root is null || root.Parent is null) return false;
-        var parent = root.Parent;
-        if(parent.LChild == node){
-            
-            // if node is the LChild child
-            if(node.IsLeaf){
-                // if is leaf is trivial
-                parent.LChild = null;
-                return true;
-            }
-            if(node.LChild == null){
-                // if the node to eliminate has no LChild child 
-                parent.LChild = node.RChild;
-                node.RChild.Parent = parent;
-                return true;
-            }
-            if(node.RChild == null){
-                // if the node to eliminate has no RChild child 
-                parent.LChild = node.LChild;
-                node.LChild.Parent = parent;
-                return true;
-            }
-            var newnode = Max_Value_Node(node.LChild);
-            node.Key = newnode.Key;
-            if(newnode.Parent.Key.CompareTo(node.Key)!=0 ){
-                // act the reference
-                newnode.Parent.RChild = null;
-            }
-            return true;
-        }else{
-            // if node is the RChild child
-            if(node.IsLeaf){
-                // if is leaf is trivial
-                parent.RChild = null;
-                return true;
-            }
-            if(node.LChild == null){
-                // if the node to eliminate has no LChild child 
-
-                parent.RChild = node.RChild;
-                node.RChild.Parent = parent;
-                return true;
-            }
-            if(node.RChild == null){
-                // if the node to eliminate has no RChild child 
-                parent.RChild = node.LChild;
-                node.LChild.Parent = parent;
-                return true;
-            }
-            var newnode = Max_Value_Node(node.LChild);
-            node.Key = newnode.Key;
-            if(newnode.Parent.Key.CompareTo(node.Key)!=0 ){
-                // act the reference
-                newnode.Parent.RChild = null;
-            }
-            return true;
         }
-    } 
+    }
+    /// <summary>Encontrar un nodo en el árbol.</summary>
+    public ABBNode<TKey> Find_Node(TKey key) => Find_Node(key, Root);
+    private ABBNode<TKey> Find_Node(TKey key, ABBNode<TKey> node)
+    {
+        if (key.CompareTo(node.Key) == 0) return node;
+        if (key.CompareTo(node.Key) < 0)
+        {
+            if (node.LChild is null) return null;
+            return Find_Node(key, node.LChild);
+        }
+        else
+        {
+            if (node.RChild is null) return null;
+            return Find_Node(key, node.RChild);
+        }
+    }
+    /// <summary>Recorrido InOrder en el árbol.</summary>
+    public IEnumerable<TKey> InOrder() => InOrder(Root);
+    private IEnumerable<TKey> InOrder(ABBNode<TKey> node)
+    {
+        ABBNode<TKey> current = this.Root;
+        Stack<ABBNode<TKey>> parentStack = new Stack<ABBNode<TKey>>();
+        while (current != null || parentStack.Count != 0)
+        {
+            if (current != null)
+            {
+                parentStack.Push(current);
+                current = current.LChild;
+            }
+            else
+            {
+                current = parentStack.Pop();
+                yield return current.Key;
+                current = current.RChild;
+            }
+        }
+    }
+    /// <summary>Nodo con el valor mínimo del árbol.</summary>
+    public ABBNode<TKey> Min_Value() => Min_Value_Node(Root);
+    /// <summary>Nodo con el valor máximo del árbol</summary>
+    public ABBNode<TKey> Max_Value() => Max_Value_Node(Root);
 
-   
+    private ABBNode<TKey> Max_Value_Node(ABBNode<TKey> root)
+    {
+        if (root.RChild == null) return root;
+        return Max_Value_Node(root.RChild);
+    }
+    private ABBNode<TKey> Min_Value_Node(ABBNode<TKey> root)
+    {
+        if (root.LChild == null) return root;
+        return Min_Value_Node(root.LChild);
+    }
+    /// <summary>Remover un nodo del árbol.
+    /// Devuelve verdadero si el nodo se eliminó correctamente.
+    /// Devuelve falso si ocurrió algún error.
+    ///</summary>
+    public bool Remove(TKey key) => Remove(key, Root);
+
+    private bool Remove(TKey key, ABBNode<TKey> root)
+    {
+        bool result = true;
+        ABBNode<TKey> parent = null;
+        ABBNode<TKey> nodeToElmininate = root;
+        while (nodeToElmininate is not null)
+        {
+            var compare = key.CompareTo(nodeToElmininate.Key);
+            if (compare == 0) break;
+            else if (compare < 0)
+            {
+                parent = nodeToElmininate;
+                nodeToElmininate = nodeToElmininate.LChild;
+            }
+            else
+            {
+                parent = nodeToElmininate;
+                nodeToElmininate = nodeToElmininate.RChild;
+            }
+        }
+        if (nodeToElmininate is null) result = false;
+        else Remove_Node(nodeToElmininate, parent);
+        return result;
+    }
+    private void Remove_Node(ABBNode<TKey> node, ABBNode<TKey> parent)
+    {
+        if (parent is null)
+        {
+            if (node.IsLeaf) node = null;
+            else if (node.OnlyLeftSon)
+            {
+                Root = node.LChild;
+            }
+            else if (node.OnlyRightSon)
+            {
+                Root = node.RChild;
+            }
+            else
+            {
+                ABBNode<TKey> swapNode = Max_Value_Node(node.LChild);
+                TKey temp = swapNode.Key;
+                Remove(temp);
+                Root.Key = temp;
+            }
+        }
+        else if (node.IsLeaf)
+        {
+            if (node.Key.CompareTo(parent.Key) < 0)
+            {
+                parent.LChild = null;
+            }
+            else
+            {
+                parent.RChild = null;
+            }
+        }
+        else if (node.OnlyLeftSon)
+        {
+            if (node.Key.CompareTo(parent.Key) < 0)
+            {
+                parent.LChild = node.LChild;
+            }
+            else
+            {
+                parent.RChild = node.LChild;
+            }
+        }
+        else if (node.OnlyRightSon)
+        {
+            if (node.Key.CompareTo(parent.Key) < 0)
+            {
+                parent.LChild = node.RChild;
+            }
+            else
+            {
+                parent.RChild = node.RChild;
+            }
+        }
+        else
+        {
+            var swapNode = Max_Value_Node(node.LChild);
+            var temp = swapNode.Key;
+            Remove(temp);
+            node.Key = temp;
+        }
+    }
+    /// <summary>Escribir en consola el árbol con todos sus respectivos nodos.</summary>
     public void Print() => Print(Root);
-    private void Print(ABBNode<TKey>  root, string textFormat = "0", int spacing = 2, int topMargin = 0, int leftMargin = 1)
+    private void Print(ABBNode<TKey> root, string textFormat = "0", int spacing = 2, int topMargin = 0, int leftMargin = 1)
     {
         if (root == null) return;
         int rootTop = Console.CursorTop + topMargin;

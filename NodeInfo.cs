@@ -1,6 +1,6 @@
 namespace BinaryTree;
 
-    /// <summary>The info necessary to print the tree</summary>
+    /// <summary>La información necesario para imprimir el árbol en pantalla</summary>
     public class NodeInfo<TKey> where TKey : IComparable<TKey>
     {
         public ABBNode<TKey> Node;
