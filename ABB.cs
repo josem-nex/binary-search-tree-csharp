@@ -53,6 +53,37 @@ public class BinaryTree<TKey> where TKey : IComparable<TKey>{
     }
     public bool Remove_Node(TKey key) => Remove_Node(key, Root);
 
+    public bool Remove_Node2(TKey key){
+        if(key.CompareTo(Root.Key)==0){
+            if(Root.IsLeaf) return false;
+            else
+            {
+                var result = Max_Value_Node(Root.LChild);
+                if(result.Key.CompareTo(Root.LChild.Key)== 0){
+                    Root.RChild.Parent = result;
+                    result.Parent = null;
+                    Root = result;
+                    return true;
+                }else
+                {
+                    if(result.LChild is not null){
+                        result.LChild.Parent = result.Parent;
+                        result.Parent.RChild = result.LChild;
+                        Root.Key = result.Key;
+                        return true;
+                    }else
+                    {
+                        result.Parent.RChild = null;
+                        Root.Key = result.Key;
+                        return true;
+                    }
+                }
+            }
+        }else return Remove_Node2(key,Root);
+    }
+    private bool Remove_Node2(TKey key, ABBNode<TKey> root){
+        return true;
+    }
     private bool Remove_Node(TKey key, ABBNode<TKey> root){   // ME QUEDE TRABAJANDO AQUI
         //This is a simplistic delete implementation, 
         //it could improve knowing the levels and the number of children of each node
@@ -116,72 +147,7 @@ public class BinaryTree<TKey> where TKey : IComparable<TKey>{
         }
     } 
 
-    #region REMOVE_TEST
-     /* 
-    private ABBNode<TKey> Remove_Node(TKey key,ABBNode<TKey> node)
-        {
-            if (node == null) return null;
-            
-            if (key.CompareTo(node.Key) < 0)
-            {
-                if (node.LChild == null) return node;
-                
-                node.LChild = Remove_Node(key, node.LChild);
-            }
-            else if (key.CompareTo(node.Key) > 0)
-            {
-                if (node.RChild == null) return node;
-                
-                node.RChild = Remove_Node(key, node.RChild);
-            }
-            else if (key.CompareTo(node.Key) == 0)
-            {
-                var findNode = Remove_Node(key,node.LChild);
-
-                node = Move(node, findNode);
-            }
-            
-
-            return node;
-        }
-    private ABBNode<TKey> Move(ABBNode<TKey> node, ABBNode<TKey> findNode)
-        {
-            ABBNode<TKey> moveNode;
-
-            if (findNode != null)
-            {
-                if (findNode.RChild != null)
-                {
-                    moveNode = findNode.RChild;
-
-                    findNode.RChild = null;
-                }
-                else
-                {
-                    findNode.LChild = null;
-
-                    moveNode = findNode;
-                }
-                
-                if (node.LChild != moveNode) moveNode.LChild = node.LChild;
-
-                if (node.RChild != moveNode) moveNode.RChild = node.RChild;
-            }
-            else
-            {
-                moveNode = null;
-            }
-
-            node.LChild = null;
-
-            node.RChild = null;
-
-            node.Key = default(TKey);
-
-            return moveNode;
-        }
-     */
-    #endregion //ENDTEST
+   
     public void Print() => Print(Root);
     private void Print(ABBNode<TKey>  root, string textFormat = "0", int spacing = 2, int topMargin = 0, int leftMargin = 1)
     {

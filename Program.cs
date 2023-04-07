@@ -22,11 +22,13 @@ class Program
         binary.Insert(37);
         binary.Insert(45);
 
-
+        // binary.Remove_Node(27);
+        // binary.Remove_Node(27);
 
 
         Random x = new Random();
         var rand = x.Next(1,50);
+        rand = 27;
 
         // binary.Print();
 
