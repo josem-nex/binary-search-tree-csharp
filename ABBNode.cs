@@ -1,6 +1,6 @@
 namespace BinaryTree;
 
-public class ABBNode<TKey> : IABBNode<TKey> where TKey : IComparable<TKey>
+public class ABBNode<TKey> where TKey : IComparable<TKey>
 {
     public TKey Key { get; set; }
     public ABBNode(TKey key)
@@ -18,14 +18,6 @@ public class ABBNode<TKey> : IABBNode<TKey> where TKey : IComparable<TKey>
     public override string ToString() => Key.ToString();
     public ABBNode<TKey> LChild { get; set; }
     public ABBNode<TKey> RChild { get; set; }
-    public void TreeLeft(TKey key)
-    {
-        this.LChild = new ABBNode<TKey>(key);
-    }
-    public void TreeRight(TKey key)
-    {
-        this.RChild = new ABBNode<TKey>(key);
-    }
 
     public bool IsLeaf
     {

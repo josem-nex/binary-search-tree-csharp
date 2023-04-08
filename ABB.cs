@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 namespace BinaryTree;
-
-public class BinaryTree<TKey> where TKey : IComparable<TKey>
+public class BinaryTree<TKey> : IBinaryTree<TKey> where TKey : IComparable<TKey>
 {
     public ABBNode<TKey> Root;
 
@@ -15,8 +15,10 @@ public class BinaryTree<TKey> where TKey : IComparable<TKey>
         var node = new ABBNode<TKey>(key);
         return Insert(node);
     }
-    public bool Insert(ABBNode<TKey> node){
-        if(Root is null){ 
+    public bool Insert(ABBNode<TKey> node)
+    {
+        if (Root is null)
+        {
             Root = node;
             return true;
         }
@@ -26,9 +28,10 @@ public class BinaryTree<TKey> where TKey : IComparable<TKey>
             while (true)
             {
                 var compare = node.Key.CompareTo(act.Key);
-                if(compare is 0) return false;
-                else if(compare<0){
-                    if(act.LChild is not null) act = act.LChild;
+                if (compare is 0) return false;
+                else if (compare < 0)
+                {
+                    if (act.LChild is not null) act = act.LChild;
                     else
                     {
                         act.LChild = node;
@@ -37,7 +40,7 @@ public class BinaryTree<TKey> where TKey : IComparable<TKey>
                 }
                 else
                 {
-                    if(act.RChild is not null) act = act.RChild;
+                    if (act.RChild is not null) act = act.RChild;
                     else
                     {
                         act.RChild = node;
@@ -47,6 +50,8 @@ public class BinaryTree<TKey> where TKey : IComparable<TKey>
             }
         }
     }
+    /// <summary>Verdadero si el nodo pertenece al árbol</summary>
+    public bool Contains(TKey key) => !(Find_Node(key) is null);
     /// <summary>Encontrar un nodo en el árbol.</summary>
     public ABBNode<TKey> Find_Node(TKey key) => Find_Node(key, Root);
     private ABBNode<TKey> Find_Node(TKey key, ABBNode<TKey> node)
@@ -88,7 +93,6 @@ public class BinaryTree<TKey> where TKey : IComparable<TKey>
     public ABBNode<TKey> Min_Value() => Min_Value_Node(Root);
     /// <summary>Nodo con el valor máximo del árbol</summary>
     public ABBNode<TKey> Max_Value() => Max_Value_Node(Root);
-
     private ABBNode<TKey> Max_Value_Node(ABBNode<TKey> root)
     {
         if (root.RChild == null) return root;
@@ -104,7 +108,6 @@ public class BinaryTree<TKey> where TKey : IComparable<TKey>
     /// Devuelve falso si ocurrió algún error.
     ///</summary>
     public bool Remove(TKey key) => Remove(key, Root);
-
     private bool Remove(TKey key, ABBNode<TKey> root)
     {
         bool result = true;
@@ -264,5 +267,18 @@ public class BinaryTree<TKey> where TKey : IComparable<TKey>
         Console.SetCursorPosition(left, top);
         if (right < 0) right = left + s.Length;
         while (Console.CursorLeft < right) Console.Write(s);
+    }
+    public bool AssertValidTree(){
+        if(Root is not null){
+            bool first = true;
+            TKey previous = default(TKey);
+            foreach (var item in InOrder())
+            {
+                if(!first&&previous.CompareTo(item)>=0) throw new Exception("InvalidTree");
+                previous = item;
+                first = false;
+            }
+        }
+        return true;
     }
 }

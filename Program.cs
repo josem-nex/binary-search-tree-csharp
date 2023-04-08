@@ -24,7 +24,7 @@ class Program
 
         binary.Print();
 
-
+        System.Console.WriteLine(binary.AssertValidTree());
     }
     
 }
